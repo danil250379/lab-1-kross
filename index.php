@@ -26,44 +26,28 @@
             $this->surname = $arr["surname"];
             $this->role = $arr["role"];
         }
-        function getInfo(){
-            switch($this->role){
-                case"Manager":
-                     echo "Здравствуйте"." ".$this->role." ".$this->name." ".$this->surname.
-                      ". Вы можете на сайте изменять, удалять и создавать клиентов.";
-                     break;
-                case"Сlient":
-                     echo "Здравствуйте"." ".$this->role." ".$this->name." ".$this->surname.
-                        ". Вы можете на сайте просматривать информацию доступную пользователям.";
-                     break;
-                case"Admin":
+    };
+            class ManagerClass extends Visiter{
+                function getInfo(){
                     echo "Здравствуйте"." ".$this->role." ".$this->name." ".$this->surname.
-                        ". Вы можете на сайте делать всё.";
-                    break;
-            }
-        }
-        
-        };
-        class ManagerClass extends Visiter{
-            function isManager(){
-                return $this->role === 'manager';
-            }
-        };
-        class ClientClass extends Visiter{
-            function isClient(){
-                return $this->role === 'client';
-            }
-        };
-        class AdminClass extends Visiter{
-            function isAdmin(){
-                return $this->role === 'admin';
-            }
-        };
+                    ". Вы можете на сайте изменять, удалять и создавать клиентов.";
+                }
+            };
+            class ClientClass extends Visiter{
+                function getInfo(){
+                    echo "Здравствуйте"." ".$this->role." ".$this->name." ".$this->surname.
+                    ". Вы можете на сайте просматривать информацию доступную пользователям.";
+                }
+             };
+            class AdminClass extends Visiter{
+                function getInfo(){
+                    echo "Здравствуйте"." ".$this->role." ".$this->name." ".$this->surname.
+                    ". Вы можете на сайте делать всё.";
+                }
+            };
          
-        $pass = $_POST["password"];
-        $log = $_POST["login"];
-
-    ?>
+            
+            ?>
     <p>Введите логин и пароль:</p>
     <form method="post">
         <p>Логин: <input type="text" name="login" > </p>
@@ -71,35 +55,39 @@
         <input type="submit" value="Ввести">
     </form>
     <div style="margin: 0 auto; border: 2px solid crimson; width: 300px; height: 200px">
-    <?php
+<?php
+
+    $pass = $_POST["password"];
+    $log = $_POST["login"];
+
     if($pass || $log){
-    foreach($arr as $k =>$v){
-    if(($arr[$k]["login"] ==  $log) ||($arr[$k]["password"] == $pass) ){
-        $counter;
-        switch ($k) {
-            case "Manager":
-                $mane = new ManagerClass($v);
-                $mane->getInfo();
-                $counter++;
-                break;
-            case "Сlient":
-                $cli = new ClientClass($v);
-                $cli->getInfo();
-                $counter++;
-                break;
-            case "Admin":
-                $adm = new AdminClass($v);
-                $adm->getInfo();
-                $counter++;
-                break;
-        };
+        foreach($arr as $k =>$v){
+        if(($arr[$k]["login"] ==  $log) ||($arr[$k]["password"] == $pass) ){
+            $counter;
+            $visiter;
+            switch ($k) {
+                case "Manager":
+                    $visiter = new ManagerClass($v);
+                    $counter++;
+                    break;
+                case "Сlient":
+                    $visiter = new ClientClass($v);
+                    $counter++;
+                    break;
+                case "Admin":
+                    $visiter = new AdminClass($v);
+                    $counter++;
+                    break;
+            };
         }; 
+        };
+        if($counter == 0) {
+            echo "Вы неправильно ввели логин или пароль или вы не зарегестрированы";
+        }else{
+            echo $visiter->getInfo();
+        };
     };
-    if($counter == 0) {
-        echo "Вы неправильно ввели логин или пароль или вы не зарегестрированы";
-};
-    };
-        ?>
+?>
         </div>
 </body>
 </html>
